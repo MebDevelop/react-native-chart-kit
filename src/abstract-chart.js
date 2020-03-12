@@ -43,7 +43,7 @@ class AbstractChart extends Component {
     const { propsForBackgroundLines = {} } = this.props.chartConfig;
     return {
       stroke: this.props.chartConfig.color(0.2),
-      strokeDasharray: "5, 10",
+      strokeDasharray: "1, 2",
       strokeWidth: 1,
       ...propsForBackgroundLines
     };
@@ -66,19 +66,19 @@ class AbstractChart extends Component {
     const { count, width, height, paddingTop, paddingRight } = config;
     const basePosition = height - height / 4;
 
-    return [...new Array(count + 1)].map((_, i) => {
-      const y = (basePosition / count) * i + paddingTop;
-      return (
-        <Line
-          key={Math.random()}
-          x1={paddingRight}
-          y1={y}
-          x2={width}
-          y2={y}
-          {...this.getPropsForBackgroundLines()}
-        />
-      );
-    });
+    // return [...new Array(count + 1)].map((_, i) => {
+    //   const y = (basePosition / count) * i + paddingTop;
+    //   return (
+    //     <Line
+    //       key={Math.random()}
+    //       x1={paddingRight}
+    //       y1={y}
+    //       x2={width}
+    //       y2={y}
+    //       {...this.getPropsForBackgroundLines()}
+    //     />
+    //   );
+    // });
   };
 
   renderHorizontalLine = config => {
@@ -201,6 +201,10 @@ class AbstractChart extends Component {
   renderVerticalLines = config => {
     const { data, width, height, paddingTop, paddingRight } = config;
     const { yAxisInterval = 1 } = this.props;
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const eachHeight = (height - height/4) / (max - min);
+    console.log('renderVerticalLines',eachHeight, data, width, height, paddingTop, paddingRight)
     return [...new Array(Math.ceil(data.length / yAxisInterval))].map(
       (_, i) => {
         return (
@@ -210,7 +214,7 @@ class AbstractChart extends Component {
               ((width - paddingRight) / (data.length / yAxisInterval)) * i +
                 paddingRight
             )}
-            y1={0}
+            y1={eachHeight * (max - data[i]) + paddingTop}
             x2={Math.floor(
               ((width - paddingRight) / (data.length / yAxisInterval)) * i +
                 paddingRight
