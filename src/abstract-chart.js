@@ -203,8 +203,8 @@ class AbstractChart extends Component {
     const { yAxisInterval = 1 } = this.props;
     const min = Math.min(...data);
     const max = Math.max(...data);
-    const eachHeight = (height - height/4) / (max - min);
-    console.log('renderVerticalLines',eachHeight, data, width, height, paddingTop, paddingRight)
+    let eachHeight = max - min === 0 ? (height - height/4) :(height - height/4) / (max - min);
+    // console.log('renderVerticalLines',eachHeight, data, width, height, paddingTop, paddingRight)
     return [...new Array(Math.ceil(data.length / yAxisInterval))].map(
       (_, i) => {
         return (
@@ -214,7 +214,7 @@ class AbstractChart extends Component {
               ((width - paddingRight) / (data.length / yAxisInterval)) * i +
                 paddingRight
             )}
-            y1={eachHeight * (max - data[i]) + paddingTop}
+            y1={eachHeight * (max - min === 0 ? 1 : max - data[i]) + paddingTop}
             x2={Math.floor(
               ((width - paddingRight) / (data.length / yAxisInterval)) * i +
                 paddingRight
